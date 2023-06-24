@@ -26,8 +26,6 @@ type RoomStatus struct {
 	Blocked     bool
 }
 
-var bookings = []Booking{}
-
 func PushBookings(booking Booking) {
 	createBooking(&booking)
 }
@@ -73,7 +71,7 @@ func GetRoomStatus() map[string]RoomStatus {
 		}
 	}
 
-	for id, _ := range config.Rooms {
+	for id := range config.Rooms {
 		_, exists := roomStatus[id]
 		if exists == false {
 			roomStatus[id] = RoomStatus{
@@ -83,4 +81,40 @@ func GetRoomStatus() map[string]RoomStatus {
 		}
 	}
 	return roomStatus
+}
+
+func GetAvailableRoom(reservationStart time.Time,
+	reservationEnd time.Time,
+	preferredRoom string) (bool, string) {
+
+	bookings := getOverlap(reservationStart, reservationEnd)
+	availableRooms := make(map[string]bool)
+
+	if len(bookings) == len(config.Rooms) {
+		return false, ""
+	}
+
+	if len(bookings) == 0 {
+		return true, preferredRoom
+	}
+
+	for id, _ := range config.Rooms {
+		availableRooms[id] = true
+	}
+
+	for _, booking := range bookings {
+		availableRooms[booking.MeetingRoom] = false
+	}
+
+	if availableRooms[preferredRoom] {
+		return true, preferredRoom
+	}
+
+	for room, isAvailable := range availableRooms {
+		if isAvailable {
+			return true, room
+		}
+	}
+
+	return false, ""
 }

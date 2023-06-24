@@ -16,7 +16,6 @@ import (
 	"github.com/slack-go/slack/slackevents"
 )
 
-
 func init() {
 	config.LoadEnv()
 	model.InitDB()
@@ -62,7 +61,7 @@ func main() {
 					case *slackevents.MemberJoinedChannelEvent:
 						fmt.Printf("user %q joined to channel %q", ev.User, ev.Channel)
 					case *slackevents.AppHomeOpenedEvent:
-						handlers.AppHomeOpenedEventHandler(ev, client)
+						handlers.AppHomeOpenedEvent(ev, client)
 					}
 				default:
 					client.Debugf("DEBUG: unsupported Events API event received")

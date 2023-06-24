@@ -2,45 +2,14 @@ package model
 
 import (
 	"fmt"
-	"log"
 	"time"
-
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
-
-var db *gorm.DB
-
-func InitDB() error {
-	var err error
-	db, err = gorm.Open(sqlite.Open("bookings.db"), &gorm.Config{})
-	err = db.AutoMigrate(&Booking{})
-	if err != nil {
-		return err
-	}
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("DEBUG: Init DB Completed")
-	return nil
-}
-
-func GetDB() *gorm.DB {
-	if db != nil {
-		return db
-	} else {
-		InitDB()
-		return db
-	}
-}
 
 // All the DB operations should be moved to different file
 
 func getAllBookingByUserIDDebug(UserID string) {
 	fmt.Println("ALL BOOKINGS ")
 	var bookings []Booking
-	// timeLimit := time.Now().Add(time.Duration(-2) * time.Hour)
 	_ = db.Where("user_id = ?  AND active = true",
 		UserID).Find(&bookings).Error
 

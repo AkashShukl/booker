@@ -45,11 +45,10 @@ func AppHomeTabView(bookings []model.Booking) slack.HomeTabViewRequest {
 	return view
 }
 
-
 func CreateSchedulebookingModal() slack.ModalViewRequest {
 
 	view := slack.ModalViewRequest{}
-	t, err := template.ParseFS(appHomeAssets, "assets/ScheduleBookingModal.json")
+	t, err := template.ParseFS(appHomeAssets, "assets/scheduleBooking/ScheduleBookingModal.json")
 	if err != nil {
 		panic(err)
 	}
@@ -67,6 +66,13 @@ func CreateSchedulebookingModal() slack.ModalViewRequest {
 	}
 	str, _ := ioutil.ReadAll(&tpl)
 	json.Unmarshal(str, &view)
+
+	nv := slack.ModalViewRequest{}
+
+	preferrenceOptions := generatePreferanceBlock()
+	json.Unmarshal(preferrenceOptions, &nv)
+
+	view.Blocks.BlockSet = append(view.Blocks.BlockSet, nv.Blocks.BlockSet...)
 	return view
 }
 
@@ -77,7 +83,7 @@ func CreateRoomStatusModal(rooms map[string]model.RoomStatus) slack.ModalViewReq
 		log.Printf("Unable to read view `StatusModal`: %v", err)
 	}
 	json.Unmarshal(str, &view)
-	fmt.Println("StatusModal :::", rooms)
+
 	for _, room := range rooms {
 		fmt.Println("StatusModal :::", room)
 		if room.Blocked == false {
@@ -93,6 +99,7 @@ func CreateRoomStatusModal(rooms map[string]model.RoomStatus) slack.ModalViewReq
 			str, _ = ioutil.ReadAll(&tpl)
 			blockView := slack.ModalViewRequest{}
 			json.Unmarshal(str, &blockView)
+
 			view.Blocks.BlockSet = append(view.Blocks.BlockSet, blockView.Blocks.BlockSet...)
 		} else {
 			t, err := template.ParseFS(appHomeAssets, "assets/status/RoomStatusBlocked.json")

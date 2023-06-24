@@ -1,9 +1,11 @@
 Todo:
 
-- Book Room only if the room is available otherwise allocate different room
-- Ask for user prefernces for room Booking
+- Add a feedback response stating whether room booked or not
+- clean code
 
 Steps to Initialize Application
+
+- Initlaize room information in config/config.go
 
 - Get Slack App token and Slack bot token and replace them with values in config.go
 - do go mod tidy in project directory

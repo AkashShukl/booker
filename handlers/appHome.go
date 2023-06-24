@@ -12,7 +12,7 @@ import (
 	"github.com/slack-go/slack/socketmode"
 )
 
-func AppHomeOpenedEventHandler(ev *slackevents.AppHomeOpenedEvent, client *socketmode.Client) {
+func AppHomeOpenedEvent(ev *slackevents.AppHomeOpenedEvent, client *socketmode.Client) {
 	if ev.Tab != "home" {
 		return
 	}
@@ -36,25 +36,6 @@ func AppHomeDeclineBooking(bookingID string, callback slack.InteractionCallback,
 	}
 }
 
-func PublishCurrentRoomStatus(callback slack.InteractionCallback, client *socketmode.Client) {
-
-	status := model.GetRoomStatus()
-	triggerID := callback.TriggerID
-	view := views.CreateRoomStatusModal(status)
-	_, err := client.OpenView(triggerID, view)
-	if err != nil {
-		log.Printf("ERROR openStatsModal: %v", err)
-	}
-}
-
-func AppHomeScheduledBookingModal(triggerID string, client *socketmode.Client) {
-	view := views.CreateSchedulebookingModal()
-	_, err := client.OpenView(triggerID, view)
-	if err != nil {
-		log.Printf("ERROR openCreateSchedulebookingModal: %v", err)
-	}
-}
-
 func PublishScheduleBooking(callback slack.InteractionCallback, client *socketmode.Client) {
 
 	date := callback.View.State.Values[views.ModalScheduleDateBlockID]["datepicker_action"].SelectedDate
@@ -64,14 +45,26 @@ func PublishScheduleBooking(callback slack.InteractionCallback, client *socketmo
 	reservationStart := common.DateTimeToUTC(date+" "+startTime, "2006-01-02 15:04")
 	reservationEnd := common.DateTimeToUTC(date+" "+endTime, "2006-01-02 15:04")
 
+	preferredRoom := callback.View.State.Values["room_preference"]["static_select-action"].SelectedOption.Value
+	fmt.Println("Selected", preferredRoom)
+
 	fmt.Println("params:", reservationStart, reservationEnd)
 	fmt.Println("User Names::: ", callback.User.ID, callback.User.Name, callback.User.RealName, callback.User.Profile)
+
+	// check for room availability
+	ok, room := model.GetAvailableRoom(reservationStart, reservationEnd, preferredRoom)
+
+	if ok == false {
+		fmt.Println("Sorry No rooms available!")
+		return
+	}
+
 	booking := model.Booking{
 		UserID:           callback.User.ID,
 		UserName:         callback.User.Name,
 		ReservationStart: reservationStart,
 		ReservationEnd:   reservationEnd,
-		MeetingRoom:      "2",
+		MeetingRoom:      room,
 		Active:           true,
 	}
 	model.PushBookings(booking)
