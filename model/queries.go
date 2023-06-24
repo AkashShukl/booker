@@ -10,7 +10,6 @@ import (
 func getAllBookingByUserIDDebug(UserID string) {
 	fmt.Println("ALL BOOKINGS ")
 	var bookings []Booking
-	// timeLimit := time.Now().Add(time.Duration(-2) * time.Hour)
 	_ = db.Where("user_id = ?  AND active = true",
 		UserID).Find(&bookings).Error
 

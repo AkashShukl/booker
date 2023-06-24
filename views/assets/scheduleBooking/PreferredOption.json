@@ -1,0 +1,40 @@
+{
+    "title": {
+        "type": "plain_text",
+        "text": "Booker",
+        "emoji": true
+    },
+    "submit": {
+        "type": "plain_text",
+        "text": "Submit",
+        "emoji": true
+    },
+    "type": "modal",
+    "callback_id": "schedule_booking_modal",
+    "close": {
+        "type": "plain_text",
+        "text": "Cancel",
+        "emoji": true
+    },
+    "blocks": [
+        {
+            "type": "input",
+            "block_id": "room_preference",
+            "element": {
+                "type": "static_select",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Preferred Room",
+                    "emoji": true
+                },
+                "options": [],
+                "action_id": "static_select-action"
+            },
+            "label": {
+                "type": "plain_text",
+                "text": "Label",
+                "emoji": true
+            }
+        }
+    ]
+}
