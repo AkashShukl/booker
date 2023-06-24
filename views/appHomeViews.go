@@ -13,6 +13,7 @@ import (
 
 	"github.com/akash/booker/model"
 	"github.com/slack-go/slack"
+	"github.com/slack-go/slack/socketmode"
 )
 
 //go:embed assets/*
@@ -85,7 +86,6 @@ func CreateRoomStatusModal(rooms map[string]model.RoomStatus) slack.ModalViewReq
 	json.Unmarshal(str, &view)
 
 	for _, room := range rooms {
-		fmt.Println("StatusModal :::", room)
 		if room.Blocked == false {
 			t, err := template.ParseFS(appHomeAssets, "assets/status/RoomStatusAvailable.json")
 			if err != nil {
@@ -145,4 +145,13 @@ func AppHomeCreateBookingSuccessLabel(bookings []model.Booking) slack.HomeTabVie
 		view.Blocks.BlockSet = append(view.Blocks.BlockSet, block_view.Blocks.BlockSet...)
 	}
 	return view
+}
+
+
+func ModalSubmissionResponse(callback slack.InteractionCallback, client *socketmode.Client) {
+	str, _ := appHomeAssets.ReadFile("assets/status/StatusModal.json")
+	view := slack.ModalViewRequest{}
+	json.Unmarshal(str, &view)
+	r, e := client.OpenView(callback.TriggerID, view)
+	fmt.Println(r.Blocks, r.NotifyOnClose, "err=>", e)
 }

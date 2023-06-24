@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/akash/booker/model"
@@ -18,7 +19,7 @@ func AppHomeScheduledBookingModal(triggerID string, client *socketmode.Client) {
 }
 
 func PublishCurrentRoomStatus(callback slack.InteractionCallback, client *socketmode.Client) {
-
+	fmt.Println("triggered: PublishCurrentRoomStatus")
 	status := model.GetRoomStatus()
 	triggerID := callback.TriggerID
 	view := views.CreateRoomStatusModal(status)
