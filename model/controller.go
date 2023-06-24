@@ -49,7 +49,7 @@ func GetBookings(userID string) []Booking {
 		bookings[i].ReservationEnd = common.UtcToIST(booking.ReservationEnd)
 		bookings[i].ReservationStart = common.UtcToIST(booking.ReservationStart)
 	}
-	fmt.Println("rggflfglg", bookings)
+
 	return bookings
 }
 

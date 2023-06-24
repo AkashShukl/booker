@@ -1,6 +1,6 @@
 Todo:
 
-- Add a feedback response stating whether room booked or not
+- Add a feedback response stating whether room booked or not( disappearing message)
 - clean code
 
 Steps to Initialize Application
