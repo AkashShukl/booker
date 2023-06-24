@@ -26,8 +26,6 @@ type RoomStatus struct {
 	Blocked     bool
 }
 
-var bookings = []Booking{}
-
 func PushBookings(booking Booking) {
 	createBooking(&booking)
 }
