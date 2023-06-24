@@ -1,0 +1,78 @@
+{
+	"title": {
+		"type": "plain_text",
+		"text": "Booker",
+		"emoji": true
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"type": "modal",
+	"callback_id": "schedule_booking_modal",
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "input",
+			"block_id": "schedule_date",
+			"element": {
+				"type": "datepicker",
+				"initial_date": "{{ .Defaultdate }}",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select a date",
+					"emoji": true
+				},
+				"action_id": "datepicker_action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Date",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "schedule_time_from",
+			"element": {
+				"type": "timepicker",
+				"initial_time":  "{{ .DefaultStartTime }}",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select time",
+					"emoji": true
+				},
+				"action_id": "timepicker_action_from"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "From",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "schedule_time_to",
+			"element": {
+				"type": "timepicker",
+				"initial_time":"{{ .DefaultEndTime }}",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select time",
+					"emoji": true
+				},
+				"action_id": "timepicker_action_to"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "To",
+				"emoji": true
+			}
+		}
+	]
+}

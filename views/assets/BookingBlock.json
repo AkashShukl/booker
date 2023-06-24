@@ -1,0 +1,31 @@
+{
+	"type": "home",
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Congrats! Meeting room booked*\nFrom: *{{ .ReservationStart }}*\nTo: *{{ .ReservationEnd }}*\nRoom No: *{{ .MeetingRoom }} *"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Decline",
+						"emoji": true
+					},
+					"style": "danger",
+					"value": "{{ .ID }}",
+					"action_id": "cancel_booking_action"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		}
+	]
+}

@@ -1,0 +1,44 @@
+{
+    "type": "modal",
+	"close": {
+		"type": "plain_text",
+		"text": "Close",
+		"emoji": true
+	},
+	"title": {
+		"type": "plain_text",
+		"text": "Status",
+		"emoji": true
+	},
+"blocks": [
+    {
+        "type": "header",
+        "text": {
+            "type": "plain_text",
+            "text": "Meeting Room {{ .RoomName }}",
+            "emoji": true
+        }
+    },
+    {
+        "type": "context",
+        "elements": [
+            {
+                "type": "mrkdwn",
+                "text": ":no_entry:"
+            },
+            {
+                "type": "mrkdwn",
+                "text": "Blocked By"
+            },
+            {
+                "type": "mrkdwn",
+                "text": "{{ .BlockedBy}}"
+            },
+            {
+                "type": "mrkdwn",
+                "text": "*Available by {{ .AvailableBy }}*"
+            }
+        ]
+    }
+]
+}

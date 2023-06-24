@@ -1,0 +1,60 @@
+{
+	"type": "home",
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "Here's what you can do with Booker:"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Schedule",
+						"emoji": true
+					},
+					"style": "primary",
+					"value": "schedule_booking",
+					"action_id": "schedule_booking"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Current Status",
+						"emoji": true
+					},
+					"value": "current_status",
+					"action_id": "current_status"
+				}
+			]
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "image",
+					"image_url": "https://api.slack.com/img/blocks/bkb_template_images/placeholder.png",
+					"alt_text": "placeholder"
+				}
+			]
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Your Bookings*"
+			}
+		},
+		{
+			"type": "divider"
+		}
+	]
+}
+
