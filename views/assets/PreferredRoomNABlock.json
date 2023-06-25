@@ -1,0 +1,23 @@
+{
+	"type": "home",
+	"blocks": [
+        {
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "Alert!",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text":{
+					"type": "mrkdwn",
+					"text": "*Regret* :white_frowning_face: {{.Msg }} *{{.Options }}*"
+				}
+		},
+        {
+			"type": "divider"
+		}
+	]
+}

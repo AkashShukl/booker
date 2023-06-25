@@ -3,17 +3,17 @@ package views
 import (
 	"bytes"
 	"embed"
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
+	"strings"
 	"time"
 
 	"encoding/json"
 
+	"github.com/akash/booker/config"
 	"github.com/akash/booker/model"
 	"github.com/slack-go/slack"
-	"github.com/slack-go/slack/socketmode"
 )
 
 //go:embed assets/*
@@ -121,7 +121,11 @@ func CreateRoomStatusModal(rooms map[string]model.RoomStatus) slack.ModalViewReq
 	return view
 }
 
-func AppHomeCreateBookingSuccessLabel(bookings []model.Booking) slack.HomeTabViewRequest {
+func AppHomeCreateBookingLabel(bookings []model.Booking,
+	success bool,
+	message string,
+	availableRooms map[string]bool) slack.HomeTabViewRequest {
+
 	str, err := appHomeAssets.ReadFile("assets/AppHomeView.json")
 	if err != nil {
 		log.Printf("Unable to read view `AppHomeView`: %v", err)
@@ -144,14 +148,34 @@ func AppHomeCreateBookingSuccessLabel(bookings []model.Booking) slack.HomeTabVie
 		json.Unmarshal(str, &block_view)
 		view.Blocks.BlockSet = append(view.Blocks.BlockSet, block_view.Blocks.BlockSet...)
 	}
+
+	if success {
+		return view
+	}
+
+	t, err := template.ParseFS(appHomeAssets, "assets/PreferredRoomNABlock.json")
+	if err != nil {
+		panic(err)
+	}
+	msg := make(map[string]string)
+	msg["Msg"] = message
+	if availableRooms != nil {
+		var str string
+		for k, _ := range availableRooms {
+			str += config.Rooms[k] + ", "
+		}
+		str = strings.TrimSuffix(str, ", ")
+		msg["Options"] = str
+	}
+	var tpl bytes.Buffer
+	err = t.Execute(&tpl, msg)
+	if err != nil {
+		panic(err)
+	}
+	str, _ = ioutil.ReadAll(&tpl)
+	faliureBlock := slack.HomeTabViewRequest{}
+	json.Unmarshal(str, &faliureBlock)
+	view.Blocks.BlockSet = append(view.Blocks.BlockSet, faliureBlock.Blocks.BlockSet...)
 	return view
-}
 
-
-func ModalSubmissionResponse(callback slack.InteractionCallback, client *socketmode.Client) {
-	str, _ := appHomeAssets.ReadFile("assets/status/StatusModal.json")
-	view := slack.ModalViewRequest{}
-	json.Unmarshal(str, &view)
-	r, e := client.OpenView(callback.TriggerID, view)
-	fmt.Println(r.Blocks, r.NotifyOnClose, "err=>", e)
 }
