@@ -46,26 +46,43 @@ func PublishScheduleBooking(callback slack.InteractionCallback, client *socketmo
 	reservationEnd := common.DateTimeToUTC(date+" "+endTime, "2006-01-02 15:04")
 
 	preferredRoom := callback.View.State.Values["room_preference"]["static_select-action"].SelectedOption.Value
-	// check for room availability
-	ok, room := model.GetAvailableRoom(reservationStart, reservationEnd, preferredRoom)
 
+	// check for room availability
+	ok, rooms := model.GetAvailableRooms(reservationStart, reservationEnd)
+
+	var view slack.HomeTabViewRequest
 	if ok == false {
 		fmt.Println("Sorry No rooms available!")
+		view = views.AppHomeCreateBookingLabel(
+			model.GetBookings(callback.User.ID),
+			false,
+			"Sorry No rooms available!",
+			nil)
+	} else if _, exists := rooms[preferredRoom]; exists == false {
+		view = views.AppHomeCreateBookingLabel(
+			model.GetBookings(callback.User.ID),
+			false,
+			"Sorry Preffered room not available! choose one from ",
+			rooms)
 	} else {
 		booking := model.Booking{
 			UserID:           callback.User.ID,
 			UserName:         callback.User.Name,
 			ReservationStart: reservationStart,
 			ReservationEnd:   reservationEnd,
-			MeetingRoom:      room,
+			MeetingRoom:      preferredRoom,
 			Active:           true,
 		}
 		model.PushBookings(booking)
-		view := views.AppHomeCreateBookingSuccessLabel(model.GetBookings(callback.User.ID))
-		_, err := client.PublishView(callback.User.ID, view, "")
-		if err != nil {
-			log.Printf("ERROR createStickieNote: %v", err)
-		}
+		view = views.AppHomeCreateBookingLabel(
+			model.GetBookings(callback.User.ID),
+			true,
+			"",
+			nil)
+	}
+	_, err := client.PublishView(callback.User.ID, view, "")
+	if err != nil {
+		log.Printf("ERROR PublishScheduleBooking: %v", err)
 	}
 
 }

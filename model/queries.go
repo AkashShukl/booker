@@ -63,7 +63,7 @@ func cancelBooking(bookingID string) (bool, error) {
 func getOverlap(searchStart, searchEnd time.Time) []Booking {
 	var bookings []Booking
 
-	err := db.Where("reservation_start BETWEEN ? AND ? OR reservation_end BETWEEN ? AND ?",
+	err := db.Where("reservation_start BETWEEN ? AND ? OR reservation_end BETWEEN ? AND ? And active = true",
 		searchStart, searchEnd, searchStart, searchEnd).
 		Find(&bookings).Error
 	if err != nil {

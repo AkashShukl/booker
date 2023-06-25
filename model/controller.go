@@ -83,19 +83,14 @@ func GetRoomStatus() map[string]RoomStatus {
 	return roomStatus
 }
 
-func GetAvailableRoom(reservationStart time.Time,
-	reservationEnd time.Time,
-	preferredRoom string) (bool, string) {
+func GetAvailableRooms(reservationStart time.Time,
+	reservationEnd time.Time) (bool, map[string]bool) {
 
 	bookings := getOverlap(reservationStart, reservationEnd)
 	availableRooms := make(map[string]bool)
 
 	if len(bookings) == len(config.Rooms) {
-		return false, ""
-	}
-
-	if len(bookings) == 0 {
-		return true, preferredRoom
+		return false, nil
 	}
 
 	for id, _ := range config.Rooms {
@@ -103,18 +98,8 @@ func GetAvailableRoom(reservationStart time.Time,
 	}
 
 	for _, booking := range bookings {
-		availableRooms[booking.MeetingRoom] = false
+		delete(availableRooms, booking.MeetingRoom)
 	}
 
-	if availableRooms[preferredRoom] {
-		return true, preferredRoom
-	}
-
-	for room, isAvailable := range availableRooms {
-		if isAvailable {
-			return true, room
-		}
-	}
-
-	return false, ""
+	return true, availableRooms
 }
