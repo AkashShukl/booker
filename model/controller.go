@@ -26,7 +26,7 @@ type RoomStatus struct {
 	Blocked     bool
 }
 
-func PushBookings(booking Booking) {
+func PushBooking(booking Booking) {
 	createBooking(&booking)
 }
 
@@ -66,14 +66,14 @@ func GetRoomStatus() map[string]RoomStatus {
 			RoomNO:      booking.MeetingRoom,
 			RoomName:    config.Rooms[booking.MeetingRoom],
 			BlockedBy:   booking.UserName,
-			AvailableBy: common.UtcToIST(booking.ReservationEnd).String(),
+			AvailableBy: common.UtcToIST(booking.ReservationEnd).Format("02 Jan 15:04"),
 			Blocked:     true,
 		}
 	}
 
 	for id := range config.Rooms {
 		_, exists := roomStatus[id]
-		if exists == false {
+		if !exists {
 			roomStatus[id] = RoomStatus{
 				Blocked:  false,
 				RoomName: config.Rooms[id],

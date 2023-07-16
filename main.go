@@ -88,10 +88,6 @@ func main() {
 							"\n Action.Value:", blockActions[0].Value)
 
 						switch blockActions[0].ActionID {
-
-						case views.InstantBookingActionID:
-							fmt.Println("DEBUG: block Actions Triggered", views.InstantBookingActionID)
-
 						case views.ScheduleBookingActionID:
 							fmt.Println("DEBUG: block Actions Triggered", views.ScheduleBookingActionID,
 								callback.TriggerID, client)
@@ -114,7 +110,7 @@ func main() {
 					}
 
 				case slack.InteractionTypeViewSubmission:
-					fmt.Println("DEBUG: Triggered => ", "InteractionTypeViewSubmission", callback.View.CallbackID, callback.View)
+					fmt.Println("DEBUG:", "InteractionTypeViewSubmission")
 					switch callback.View.CallbackID {
 					case views.ScheduleBookingModalCallbackID:
 						handlers.PublishScheduleBooking(callback, client)
@@ -131,37 +127,37 @@ func main() {
 				}
 
 				client.Ack(*evt.Request, payload)
-			case socketmode.EventTypeSlashCommand:
-				cmd, ok := evt.Data.(slack.SlashCommand)
-				if !ok {
-					fmt.Printf("Ignored %+v\n", evt)
+			// case socketmode.EventTypeSlashCommand:
+			// 	cmd, ok := evt.Data.(slack.SlashCommand)
+			// 	if !ok {
+			// 		fmt.Printf("Ignored %+v\n", evt)
 
-					continue
-				}
+			// 		continue
+			// 	}
 
-				client.Debugf("Slash command received: %+v", cmd)
+			// 	client.Debugf("Slash command received: %+v", cmd)
 
-				payload := map[string]interface{}{
-					"blocks": []slack.Block{
-						slack.NewSectionBlock(
-							&slack.TextBlockObject{
-								Type: slack.MarkdownType,
-								Text: "foo",
-							},
-							nil,
-							slack.NewAccessory(
-								slack.NewButtonBlockElement(
-									"",
-									"somevalue",
-									&slack.TextBlockObject{
-										Type: slack.PlainTextType,
-										Text: "bar",
-									},
-								),
-							),
-						),
-					},
-				}
+			// 	payload := map[string]interface{}{
+			// 		"blocks": []slack.Block{
+			// 			slack.NewSectionBlock(
+			// 				&slack.TextBlockObject{
+			// 					Type: slack.MarkdownType,
+			// 					Text: "foo",
+			// 				},
+			// 				nil,
+			// 				slack.NewAccessory(
+			// 					slack.NewButtonBlockElement(
+			// 						"",
+			// 						"somevalue",
+			// 						&slack.TextBlockObject{
+			// 							Type: slack.PlainTextType,
+			// 							Text: "bar",
+			// 						},
+			// 					),
+			// 				),
+			// 			),
+			// 		},
+			// 	}
 
 				client.Ack(*evt.Request, payload)
 			default:

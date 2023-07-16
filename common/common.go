@@ -29,14 +29,12 @@ func ExtractDateString(utcTime time.Time) string {
 }
 
 func DateTimeToUTC(dateString, layout string) time.Time {
-
 	if layout == "" {
 		layout = "2006-01-02 15:04:05"
 	}
 	loc, _ := time.LoadLocation("Asia/Calcutta")
 	sourceTime, _ := time.ParseInLocation(layout, dateString, loc)
 	utcTime := sourceTime.UTC()
-	fmt.Println("DateString: ", dateString, utcTime)
 	return utcTime
 }
 
@@ -44,3 +42,4 @@ func UtcToIST(utcTime time.Time) time.Time {
 	loc, _ := time.LoadLocation("Asia/Calcutta")
 	return utcTime.In(loc)
 }
+

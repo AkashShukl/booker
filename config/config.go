@@ -14,8 +14,6 @@ var Rooms = map[string]string{
 	"3": "Gamma",
 }
 
-const ()
-
 var env map[string]string
 
 func LoadEnv() {

@@ -19,7 +19,7 @@ import (
 //go:embed assets/*
 var appHomeAssets embed.FS
 
-func AppHomeTabView(bookings []model.Booking) slack.HomeTabViewRequest {
+func AppHomeTabView(bookings []map[string]string) slack.HomeTabViewRequest {
 
 	str, err := appHomeAssets.ReadFile("assets/AppHomeView.json")
 	if err != nil {
@@ -86,7 +86,7 @@ func CreateRoomStatusModal(rooms map[string]model.RoomStatus) slack.ModalViewReq
 	json.Unmarshal(str, &view)
 
 	for _, room := range rooms {
-		if room.Blocked == false {
+		if !room.Blocked {
 			t, err := template.ParseFS(appHomeAssets, "assets/status/RoomStatusAvailable.json")
 			if err != nil {
 				panic(err)
@@ -121,7 +121,7 @@ func CreateRoomStatusModal(rooms map[string]model.RoomStatus) slack.ModalViewReq
 	return view
 }
 
-func AppHomeCreateBookingLabel(bookings []model.Booking,
+func AppHomeCreateBookingLabel(bookings []map[string]string,
 	success bool,
 	message string,
 	availableRooms map[string]bool) slack.HomeTabViewRequest {
